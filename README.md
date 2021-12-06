@@ -1,6 +1,4 @@
 # google-codelabs
-Repository intended to hold applications following google's android codelab
+Repository intended to hold applications following google's pathways
 
-Starting from -> https://developer.android.com/codelabs/kotlin-android-training-app-anatomy#0
-
-Next -> https://developer.android.com/codelabs/advanced-android-kotlin-training-welcome?index=..%2F..advanced-android-kotlin-training#0
+Starting from -> https://developer.android.com/courses/android-basics-kotlin/course?hl=pt_br

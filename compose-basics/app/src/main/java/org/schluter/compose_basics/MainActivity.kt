@@ -3,6 +3,8 @@ package org.schluter.compose_basics
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -11,9 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.schluter.compose_basics.MainActivity.Companion.padding_16
 import org.schluter.compose_basics.ui.theme.ComposeBasicsTheme
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        val padding_16: Modifier = Modifier.padding(16.dp);
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -26,15 +32,22 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String = "") {
-    Surface(color = MaterialTheme.colors.primary) {
-        Text(text = "Hello $name!",  modifier = Modifier.padding(16.dp))
+    Surface(color = MaterialTheme.colors.primary, modifier = Modifier.fillMaxWidth(1f).padding(8.dp)) {
+        Column(modifier = padding_16) {
+            Text(text = "Hello,")
+            Text(text = "$name!")
+        }
     }
 }
 
 @Composable
-private fun MyApp() {
+private fun MyApp(names: List<String> = listOf("Leonardo", "Angella")) {
     Surface(color = MaterialTheme.colors.background) {
-        Greeting("Android")
+        Column {
+            for (name in names){
+                Greeting(name)
+            }
+        }
     }
 }
 
@@ -42,6 +55,6 @@ private fun MyApp() {
 @Composable
 fun DefaultPreview() {
     ComposeBasicsTheme {
-        Greeting("Android")
+        MyApp()
     }
 }

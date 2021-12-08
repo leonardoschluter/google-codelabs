@@ -1,7 +1,7 @@
 package org.schluter.compose_basics.ui.theme
 
 import androidx.compose.ui.graphics.Color
-
+val deepGreen = Color(0XFF1b5e20)
 val Purple200 = Color(0xFFBB86FC)
 val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)

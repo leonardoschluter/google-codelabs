@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.schluter.compose_basics.MainActivity.Companion.padding_16
@@ -48,6 +52,25 @@ fun MyApp() {
 }
 
 @Composable
+fun CollapseButton(expanded: Boolean, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick
+    ) {
+        Icon(
+            imageVector =
+            if (expanded)
+                Icons.Filled.ExpandLess
+            else
+                Icons.Filled.ExpandMore,
+            contentDescription = if (expanded) stringResource(R.string.show_more) else stringResource(
+                R.string.show_less
+            )
+
+        )
+    }
+}
+
+@Composable
 fun Greeting(name: String = "") {
     val expanded = rememberSaveable { mutableStateOf(false) }
     val extraPadding by animateDpAsState(
@@ -56,7 +79,14 @@ fun Greeting(name: String = "") {
         } else {
             0.dp
         },
-        animationSpec = if(expanded.value) { spring(dampingRatio = Spring.DampingRatioHighBouncy, stiffness = Spring.StiffnessVeryLow) } else {  spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessHigh)  }
+        animationSpec = if (expanded.value) {
+            spring(
+                dampingRatio = Spring.DampingRatioHighBouncy,
+                stiffness = Spring.StiffnessVeryLow
+            )
+        } else {
+            spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+        }
     )
     Surface(
         color = MaterialTheme.colors.primary, modifier = Modifier
@@ -69,11 +99,13 @@ fun Greeting(name: String = "") {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = "Hello,")
                 Text(text = "$name!")
+                if (expanded.value) {
+                    Text(stringResource(R.string.lorem_ipsium))
+                }
             }
-            OutlinedButton(
-                onClick = { expanded.value = !expanded.value }) {
-                Text(if (expanded.value) "Show less" else "Show more")
-            }
+            CollapseButton(
+                expanded = expanded.value,
+                onClick = { expanded.value = !expanded.value })
         }
     }
 }

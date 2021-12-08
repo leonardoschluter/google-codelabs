@@ -3,11 +3,18 @@ package org.schluter.compose_basics
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp() {
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
     if (shouldShowOnboarding) {
         OnboardingScreen(onClick = { shouldShowOnboarding = false })
     } else {
@@ -42,18 +49,22 @@ fun MyApp() {
 
 @Composable
 fun Greeting(name: String = "") {
-    val expanded = remember { mutableStateOf(false) }
+    val expanded = rememberSaveable { mutableStateOf(false) }
+    val extraPadding by animateDpAsState(
+        targetValue = if (expanded.value) {
+            42.dp
+        } else {
+            0.dp
+        },
+        animationSpec = if(expanded.value) { spring(dampingRatio = Spring.DampingRatioHighBouncy, stiffness = Spring.StiffnessVeryLow) } else {  spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessHigh)  }
+    )
     Surface(
         color = MaterialTheme.colors.primary, modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
         Row(
-            modifier = if (expanded.value) {
-                padding_16.padding(bottom = 42.dp)
-            } else {
-                padding_16
-            }
+            modifier = padding_16.padding(bottom = extraPadding.coerceAtLeast(0.dp))
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = "Hello,")
@@ -68,10 +79,10 @@ fun Greeting(name: String = "") {
 }
 
 @Composable
-private fun Greetings(names: List<String> = List(1000){"$it"}) {
+private fun Greetings(names: List<String> = List(1000) { "$it" }) {
     Surface(color = MaterialTheme.colors.background) {
         LazyColumn {
-            items(items = names){ name ->
+            items(items = names) { name ->
                 Greeting(name)
             }
         }
